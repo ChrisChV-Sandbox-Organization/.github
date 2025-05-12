@@ -24,7 +24,7 @@ jobs:
 
       - name: Read board mapping
         run: |
-          PROJECT_URL=$(jq -r --arg group "${{ inputs.board_name }}" '.boards[$group]' ./cc-bards-config.json)
+          PROJECT_URL=$(jq -r --arg group "${{ inputs.board_name }}" '.boards[$group]' ./cc-boards-config.json)
 
           if [[ "$PROJECT_URL" == "null" || -z "$PROJECT_URL" ]]; then
             echo "No project found for group: $REPO_GROUP"
