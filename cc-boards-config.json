@@ -1,0 +1,8 @@
+{
+  "boards": {
+    "cc-edx-platform": "https://github.com/orgs/ChrisChV-Sandbox-Organization/projects/1",
+    "cc-frontend-apps": "https://github.com/orgs/ChrisChV-Sandbox-Organization/projects/2",
+    "cc-core-apps": "https://github.com/orgs/ChrisChV-Sandbox-Organization/projects/3",
+    "cc-other-utils": "https://github.com/orgs/ChrisChV-Sandbox-Organization/projects/4"
+  }
+}

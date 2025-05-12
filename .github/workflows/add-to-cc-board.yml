@@ -1,0 +1,55 @@
+name: Add Issue or PR to a Core Contributor project board
+on:
+  workflow_call:
+    inputs:
+      item_number:
+        required: true
+        type: number
+      repo_name:
+        required: true
+        type: string
+      board_name:
+        required: true
+        type: string
+      item_type:
+        required: true
+        type: string  # "issue" or "pull_request"
+
+jobs:
+  add-item:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Read board mapping
+        run: |
+          PROJECT_URL=$(jq -r --arg group "${{ inputs.board_name }}" '.boards[$group]' ./cc-bards-config.json)
+
+          if [[ "$PROJECT_URL" == "null" || -z "$PROJECT_URL" ]]; then
+            echo "No project found for group: $REPO_GROUP"
+            exit 1
+          fi
+
+          echo "PROJECT_URL=$PROJECT_URL" >> $GITHUB_ENV
+
+      - name: Get Content ID (Issue o PR)
+        run: |
+          ITEM_TYPE="${{ inputs.item_type }}"
+          ITEM_NUMBER="${{ inputs.item_number }}"
+          REPO_NAME="${{ inputs.repo_name }}"
+
+          if ! CONTENT_ID=$(gh "$ITEM_TYPE" view "$ITEM_NUMBER" --repo "$REPO_NAME" --json id --jq '.id'); then
+            echo "Failed to fetch content ID"
+            exit 1
+          fi
+
+          echo "CONTENT_ID=$CONTENT_ID" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add item to board
+        run: |
+          gh project item-add ${{ env.PROJECT_URL }} --owner openedx --content-id ${{ env.CONTENT_ID }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
