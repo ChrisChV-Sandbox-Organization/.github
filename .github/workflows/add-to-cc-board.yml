@@ -42,7 +42,7 @@ jobs:
 
       - name: Add item to board
         run: |
-          echo "'${{ inputs.item_url }}'"
+          gh auth status
           gh project item-add ${{ env.PROJECT_NUMBER }} --owner ChrisChV-Sandbox-Organization --url ${{ inputs.item_url }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
