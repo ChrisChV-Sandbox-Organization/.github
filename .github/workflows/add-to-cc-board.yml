@@ -2,18 +2,15 @@ name: Add Issue or PR to a Core Contributor project board
 on:
   workflow_call:
     inputs:
-      item_number:
-        required: true
-        type: string
       repo_name:
         required: true
         type: string
       board_name:
         required: true
         type: string
-      item_type:
+      item_url:
         required: true
-        type: string  # "issue" or "pull_request"
+        type: string
 
 jobs:
   add-item:
@@ -43,23 +40,8 @@ jobs:
               ;;
           esac
 
-      - name: Get Content ID (Issue o PR)
-        run: |
-          ITEM_TYPE="${{ inputs.item_type }}"
-          ITEM_NUMBER="${{ inputs.item_number }}"
-          REPO_NAME="${{ inputs.repo_name }}"
-
-          if ! CONTENT_ID=$(gh "$ITEM_TYPE" view "$ITEM_NUMBER" --repo "$REPO_NAME" --json id --jq '.id'); then
-            echo "Failed to fetch content ID"
-            exit 1
-          fi
-
-          echo "CONTENT_ID=$CONTENT_ID" >> $GITHUB_ENV
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Add item to board
         run: |
-          gh project item-add ${{ env.PROJECT_URL }} --owner openedx --content-id ${{ env.CONTENT_ID }}
+          gh project item-add ${{ env.PROJECT_URL }} --owner openedx --url ${{ inputs.item_url }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
