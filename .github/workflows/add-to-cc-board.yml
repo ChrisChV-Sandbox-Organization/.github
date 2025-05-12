@@ -22,16 +22,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Read board mapping
+      - name: Map board name to board URL
         run: |
-          PROJECT_URL=$(jq -r --arg group "${{ inputs.board_name }}" '.boards[$group]' ./cc-boards-config.json)
-
-          if [[ "$PROJECT_URL" == "null" || -z "$PROJECT_URL" ]]; then
-            echo "No project found for group: $REPO_GROUP"
-            exit 1
-          fi
-
-          echo "PROJECT_URL=$PROJECT_URL" >> $GITHUB_ENV
+          case "${{ inputs.board_name }}" in
+            cc-edx-platform)
+              echo "PROJECT_URL=https://github.com/orgs/openedx/projects/1" >> $GITHUB_ENV
+              ;;
+            cc-frontend-apps)
+              echo "PROJECT_URL=https://github.com/orgs/openedx/projects/2" >> $GITHUB_ENV
+              ;;
+            cc-core-apps)
+              echo "PROJECT_URL=https://github.com/orgs/openedx/projects/3" >> $GITHUB_ENV
+              ;;
+            cc-other-utils)
+              echo "PROJECT_URL=https://github.com/orgs/openedx/projects/4" >> $GITHUB_ENV
+              ;;
+            *)
+              echo "Unknown board name: '${{ inputs.board_name }}'" >&2
+              exit 1
+              ;;
+          esac
 
       - name: Get Content ID (Issue o PR)
         run: |
