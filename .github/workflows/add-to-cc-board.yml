@@ -42,6 +42,7 @@ jobs:
 
       - name: Add item to board
         run: |
-          gh project item-add ${{ env.PROJECT_URL }} --owner openedx --url ${{ inputs.item_url }}
+          echo "'${{ inputs.item_url }}'"
+          gh project item-add ${{ env.PROJECT_URL }} --owner openedx --url '${{ inputs.item_url }}'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
