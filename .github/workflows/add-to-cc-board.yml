@@ -11,6 +11,9 @@ on:
       item_url:
         required: true
         type: string
+    secrets:
+      projects_access_token:
+        required: true
 
 jobs:
   add-item:
@@ -43,6 +46,7 @@ jobs:
       - name: Add item to board
         run: |
           gh auth status
+          gh project list --owner ChrisChV-Sandbox-Organization
           gh project item-add ${{ env.PROJECT_NUMBER }} --owner ChrisChV-Sandbox-Organization --url ${{ inputs.item_url }}
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.projects_access_token }}
