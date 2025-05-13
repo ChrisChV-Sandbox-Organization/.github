@@ -2,13 +2,7 @@ name: Add Issue or PR to a Core Contributor project board
 on:
   workflow_call:
     inputs:
-      repo_name:
-        required: true
-        type: string
       board_name:
-        required: true
-        type: string
-      item_url:
         required: true
         type: string
     secrets:
@@ -19,6 +13,15 @@ jobs:
   add-item:
     runs-on: ubuntu-latest
     steps:
+      - name: Set item URL
+        id: set_item_url
+        run: |
+          if [[ "${{ github.event.issue.html_url }}" != "" ]]; then
+            echo "item_url=${{ github.event.issue.html_url }}" >> $GITHUB_OUTPUT
+          else
+            echo "item_url=${{ github.event.pull_request.html_url }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: Map board name to board URL
         id: map_board
         run: |
@@ -43,6 +46,6 @@ jobs:
 
       - name: Add item to board
         run: |
-          gh project item-add ${{ steps.map_board.outputs.project_number }} --owner ChrisChV-Sandbox-Organization --url ${{ inputs.item_url }}
+          gh project item-add ${{ steps.map_board.outputs.project_number }} --owner ChrisChV-Sandbox-Organization --url } ${{ steps.set_item_url.outputs.item_url }}
         env:
           GH_TOKEN: ${{ secrets.projects_access_token }}
