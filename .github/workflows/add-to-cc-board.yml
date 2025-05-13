@@ -5,6 +5,9 @@ on:
       board_name:
         required: true
         type: string
+    secrets:
+      projects_access_token:
+        required: true
 
 jobs:
   add-item:
@@ -45,4 +48,4 @@ jobs:
         run: |
           gh project item-add ${{ steps.map_board.outputs.project_number }} --owner ChrisChV-Sandbox-Organization --url ${{ steps.set_item_url.outputs.item_url }}
         env:
-          GH_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+          GH_TOKEN: ${{ secrets.projects_access_token }}
