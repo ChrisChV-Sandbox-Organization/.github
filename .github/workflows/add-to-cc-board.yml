@@ -19,23 +19,21 @@ jobs:
   add-item:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
       - name: Map board name to board URL
+        id: map_board
         run: |
           case "${{ inputs.board_name }}" in
             cc-edx-platform)
-              echo "PROJECT_NUMBER=1" >> $GITHUB_ENV
+              echo "project_number=1" >> $GITHUB_OUTPUT
               ;;
             cc-frontend-apps)
-              echo "PROJECT_NUMBER=2" >> $GITHUB_ENV
+              echo "project_number=2" >> $GITHUB_OUTPUT
               ;;
             cc-core-apps)
-              echo "PROJECT_NUMBER=3" >> $GITHUB_ENV
+              echo "project_number=3" >> $GITHUB_OUTPUT
               ;;
             cc-other-utils)
-              echo "PROJECT_NUMBER=4" >> $GITHUB_ENV
+              echo "project_number=4" >> $GITHUB_OUTPUT
               ;;
             *)
               echo "Unknown board name: '${{ inputs.board_name }}'" >&2
@@ -45,7 +43,6 @@ jobs:
 
       - name: Add item to board
         run: |
-          gh project list --owner ChrisChV-Sandbox-Organization
-          gh project item-add ${{ env.PROJECT_NUMBER }} --owner ChrisChV-Sandbox-Organization --url ${{ inputs.item_url }}
+          gh project item-add ${{ steps.map_board.outputs.project_number }} --owner ChrisChV-Sandbox-Organization --url ${{ inputs.item_url }}
         env:
           GH_TOKEN: ${{ secrets.projects_access_token }}
