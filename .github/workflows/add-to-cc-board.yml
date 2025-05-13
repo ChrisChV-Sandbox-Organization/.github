@@ -46,6 +46,6 @@ jobs:
 
       - name: Add item to board
         run: |
-          gh project item-add ${{ steps.map_board.outputs.project_number }} --owner ChrisChV-Sandbox-Organization --url } ${{ steps.set_item_url.outputs.item_url }}
+          gh project item-add ${{ steps.map_board.outputs.project_number }} --owner ChrisChV-Sandbox-Organization --url ${{ steps.set_item_url.outputs.item_url }}
         env:
           GH_TOKEN: ${{ secrets.projects_access_token }}
